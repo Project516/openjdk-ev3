@@ -4,105 +4,60 @@ FROM debian:$DEBIAN_RELEASE
 ARG DEBIAN_RELEASE
 ARG ARCH
 
-# this is a customized version of ev3dev-stretch-cross image
+# This is a customized version of ev3dev-stretch-cross image
 
-# setup repositories and install required packages
+# Setup repositories and install required packages
 COPY sources.list.$DEBIAN_RELEASE /etc/apt/sources.list
 COPY ev3dev-archive-keyring.gpg /etc/apt/trusted.gpg.d/
 
-# Add architecture and update package lists
+# Install native packages first
 RUN dpkg --add-architecture $ARCH && \
-    apt-get -qq update
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        ca-certificates wget curl less nano vim bash-completion tree sudo \
+        man-db cmake build-essential gdb-multiarch pkg-config qemu-user-static \
+        xz-utils zip pigz unzip cpio file make m4 gawk procps autoconf \
+        autoconf-archive automake autotools-dev mercurial git systemtap \
+        systemtap-sdt-dev zlib1g-dev gdb libarchive13 libbabeltrace-ctf1 \
+        libbabeltrace1 libcurl3 libcurl3-gnutls libdw1 libgnutls30
 
-# Install core utilities
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
-        ca-certificates \
-        wget \
-        curl
-
-# Install text editors and pagers
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
-        less \
-        nano \
-        vim
-
-# Install shell utilities
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
-        bash-completion \
-        tree
-
-# Install sudo and man-db
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
-        sudo \
-        man-db
-
-# Install build tools and compilers
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
-        cmake \
-        build-essential \
+# Install cross-compilation packages with ALL dependencies in one go
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
         crossbuild-essential-$ARCH \
-        gdb-multiarch \
-        pkg-config \
-        qemu-user-static
-
-# Install compression and archiving tools
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
-        xz-utils \
-        zip \
-        pigz \
-        unzip \
-        cpio \
-        file
-
-# Install build utilities
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
-        make \
-        m4 \
-        gawk \
-        procps \
-        autoconf \
-        autoconf-archive \
-        automake \
-        autotools-dev
-
-# Install version control systems
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
-        mercurial \
-        git
-
-# Install systemtap (native architecture)
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
-        systemtap \
-        systemtap-sdt-dev
-
-# Install native architecture development libraries
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
-        zlib1g-dev
-
-# Install cross-architecture X11 and graphics libraries
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
+        # X11 development libraries
         libx11-dev:$ARCH \
         libxext-dev:$ARCH \
         libxrender-dev:$ARCH \
         libxrandr-dev:$ARCH \
         libxtst-dev:$ARCH \
-        libxt-dev:$ARCH
-
-# Install cross-architecture multimedia libraries
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
+        libxt-dev:$ARCH \
+        # CUPS printing system
         libcups2-dev:$ARCH \
+        libcups2:$ARCH \
+        libcupsimage2-dev:$ARCH \
+        # Font and graphics
         libfreetype6-dev:$ARCH \
+        libfreetype6:$ARCH \
         libfontconfig1-dev:$ARCH \
-        libasound2-dev:$ARCH
-
-# Install cross-architecture image and utility libraries
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
+        libfontconfig1:$ARCH \
+        libexpat1-dev:$ARCH \
+        # Multimedia
+        libasound2-dev:$ARCH \
+        # Compression and images
         libffi-dev:$ARCH \
         libpng-dev:$ARCH \
+        libpng16-16:$ARCH \
         libjpeg-dev:$ARCH \
         libgif-dev:$ARCH \
         liblcms2-dev:$ARCH \
-        zlib1g-dev:$ARCH
+        zlib1g-dev:$ARCH \
+        zlib1g:$ARCH \
+        # Essential C development for cross-compilation
+        libc6-dev:$ARCH \
+        linux-libc-dev:$ARCH
+
+# Clean up
+RUN rm -rf /var/lib/apt/lists/*
 
 # Download and extract architecture-specific systemtap-sdt-dev
 RUN ( if [ "$DEBIAN_RELEASE" = "stretch" ]; then \
@@ -113,11 +68,9 @@ RUN ( if [ "$DEBIAN_RELEASE" = "stretch" ]; then \
     dpkg-deb -x /tmp/systemtap.deb / && \
     rm -rf /tmp/systemtap.deb
 
-# Clean up APT cache
-RUN rm -rf /var/lib/apt/lists/*
-
-# prepare a nonroot user
+# Prepare a nonroot user
 COPY compiler.sudoers /etc/sudoers.d/compiler
 RUN chmod 0440 /etc/sudoers.d/compiler && \
-    adduser --disabled-password --gecos \"\" compiler && \
+    adduser --disabled-password --gecos "" compiler && \
     usermod -a -G sudo compiler
+    

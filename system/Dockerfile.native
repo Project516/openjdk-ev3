@@ -13,18 +13,27 @@ COPY ev3dev-archive-keyring.gpg /etc/apt/trusted.gpg.d/
 # Update package lists
 RUN apt-get -qq update
 
-# Install basic system utilities
+# Install core utilities
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
-        bash-completion \
         ca-certificates \
-        less \
-        man-db \
-        nano \
-        sudo \
-        tree \
-        vim \
         wget \
         curl
+
+# Install text editors and pagers
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
+        less \
+        nano \
+        vim
+
+# Install shell utilities
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
+        bash-completion \
+        tree
+
+# Install sudo and man-db
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
+        sudo \
+        man-db
 
 # Install build tools and compilers
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \

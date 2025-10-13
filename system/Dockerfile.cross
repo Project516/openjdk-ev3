@@ -19,7 +19,8 @@ RUN dpkg --add-architecture $ARCH && \
         xz-utils zip pigz unzip cpio file make m4 gawk procps autoconf \
         autoconf-archive automake autotools-dev mercurial git systemtap \
         systemtap-sdt-dev zlib1g-dev gdb libarchive13 libbabeltrace-ctf1 \
-        libbabeltrace1 libcurl3 libcurl3-gnutls libdw1 libgnutls30
+        libbabeltrace1 libcurl3 libcurl3-gnutls libdw1 libgnutls30 \
+        g++
 
 # Install cross-compilation packages with ALL dependencies in one go
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -73,4 +74,3 @@ COPY compiler.sudoers /etc/sudoers.d/compiler
 RUN chmod 0440 /etc/sudoers.d/compiler && \
     adduser --disabled-password --gecos "" compiler && \
     usermod -a -G sudo compiler
-    

@@ -14,7 +14,9 @@ RUN apt-get -qq update && \
         zip unzip \
         gnupg dctrl-tools dput \
         liblcms2-2 \
-        pigz xz-utils
+        pigz xz-utils \
+        build-essential \
+        g++
 
 # prepare a nonroot user
 COPY compiler.sudoers /etc/sudoers.d/compiler

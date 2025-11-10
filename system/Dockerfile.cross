@@ -55,7 +55,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
         zlib1g:$ARCH \
         # Essential C development for cross-compilation
         libc6-dev:$ARCH \
-        linux-libc-dev:$ARCH
+        linux-libc-dev:$ARCH \
+        build-essential \
+        g++
 
 # Clean up
 RUN rm -rf /var/lib/apt/lists/*

@@ -183,7 +183,7 @@ elif [ "$JDKVER" == "10" ]; then
 
 # OpenJDK 11
 elif [ "$JDKVER" == "11" ]; then
-  VERSION_POLICY="latest_general_availability"
+  VERSION_POLICY="jdk-11.0.15+10"
   JAVA_SCM="git"
   JAVA_REPO="https://github.com/openjdk/jdk11u.git"
   PATCHVER="jdk11"

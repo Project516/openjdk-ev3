@@ -40,7 +40,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recomm
         cmake \
         build-essential \
         gdb-multiarch \
-        pkg-config
+        pkg-config \
+        g++
 
 # Install compression and archiving tools
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \

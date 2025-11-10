@@ -83,8 +83,8 @@ TARGET_OPENJDK_VERSION="11" # 9, 10, 12, 13, 14 - retired, may not be working
                             # loom or tip - experimental, may be broken
 
 # clone repository
-git clone https://github.com/ev3dev-lang-java/openjdk-ev3.git
-cd openjdk-ev3
+# git clone https://github.com/ev3dev-lang-java/openjdk-ev3.git
+# cd openjdk-ev3
 
 # prepare working directory
 mkdir -p "$TARGET_WORKSPACE"

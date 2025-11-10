@@ -19,7 +19,7 @@ TARBALL_MAX_DOWNLOADS=10
 JRI_MODULES="java.se,jdk.jdwp.agent,jdk.unsupported,jdk.management.agent,jdk.jartool,jdk.crypto.ec"
 
 JTREG="$BUILDDIR/jtreg"
-JTREG_URL="https://ci.adoptopenjdk.net/view/Dependencies/job/jtreg/lastSuccessfulBuild/artifact/jtreg-4.2.0-tip.tar.gz"
+JTREG_URL="https://ftp2.osuosl.org/pub/blfs/conglomeration/jdk/jtreg-4.2.0-tip.tar.gz"
 JTREG_FILE="$BUILDDIR/jtreg.tar.gz"
 
 ###############################################################################
